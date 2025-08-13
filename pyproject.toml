@@ -1,0 +1,14 @@
+[project]
+name = "quantum-compiler-profiling"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "cirq>=1.6.0",
+    "py-spy>=0.4.1",
+    "pyqpanda3>=0.3.1",
+    "pytket>=2.9.1",
+    "qiskit>=2.1.1",
+    "ucc>=0.4.8",
+]
