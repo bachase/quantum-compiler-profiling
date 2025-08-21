@@ -61,3 +61,5 @@ This repository is compatible with GitHub Codespaces as you can use `py-spy` `--
    ```
 
 4. **View profiles**: Download the generated `.profile.json` files and view them locally in [Speedscope](https://speedscope.app), or use the VS Code extension for profile viewing.
+
+ The QFT QASM circuit comes by way of Qiskit Benchpress and QASMBench.
