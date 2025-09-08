@@ -2,6 +2,49 @@ import gzip
 import sys
 import warnings
 from typing import List
+import pandas as pd
+
+pass_log = []
+
+
+def transpiler_callback(**kwargs):
+    """
+    Callback function for Qiskit transpiler passes.
+    Prints time spent on the pass and changes in circuit size and depth.
+    """
+    current_pass = kwargs["pass_"]
+    dag = kwargs["dag"]
+    time_spent = kwargs["time"]
+
+    circuit_size = dag.size()
+    circuit_depth = dag.depth()
+
+    pass_log.append(
+        {
+            "Pass": current_pass.__class__.__name__,
+            "Time (s)": f"{time_spent:.4f}",
+            "Size": circuit_size,
+            "Depth": circuit_depth,
+        }
+    )
+
+
+def run_qiskit_logged(qasm):
+    from qiskit import QuantumCircuit, transpile
+
+    global pass_log
+    pass_log.clear()
+    circuit = QuantumCircuit.from_qasm_str(qasm)
+    transpile(
+        circuit,
+        basis_gates=["rz", "rx", "ry", "h", "cx"],
+        optimization_level=3,
+        callback=transpiler_callback,
+    )
+    if pass_log:
+        df = pd.DataFrame(pass_log)
+        print(df.to_markdown(index=False))
+    return circuit
 
 
 def run_qiskit(qasm):
@@ -169,6 +212,8 @@ def main():
         # based on the command line argument, run a specific compiler
         if sys.argv[1] == "qiskit":
             run_qiskit(qasm)
+        elif sys.argv[1] == "qiskit_logged":
+            run_qiskit_logged(qasm)
         elif sys.argv[1] == "pytket":
             run_pytket(qasm)
         elif sys.argv[1] == "cirq":
